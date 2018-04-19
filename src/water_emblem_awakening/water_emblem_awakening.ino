@@ -1,6 +1,8 @@
 #include <SPI.h>
 #include <Gamebuino.h>
 #include "gameMain.h"
+#include "unit.h"
+#include "ui.h"
 
 Gamebuino gb;
 
@@ -52,26 +54,40 @@ void setup()
   initGame();
 }
 
+int lock = 0;
+
+Unit u;
+
 void loop(){
+  u.hp = 23;
+  u.attck = 24;
+  u.def = 25;
   if(gb.update()){
     //pause the game if C is pressed
     if(gb.buttons.pressed(BTN_C)){
       initGame();
     }
+
+    if(gb.buttons.pressed(BTN_B)) {
+      if (lock == 0) {
+        lock = 1;
+      } else {
+        lock = 0;
+      }
+    }
+
+    if (lock == 1) {
+      showScreen(u);
+    }
+
+
     
-    updateCursor();
+   // updateCursor();
     
-    drawWorld();
-    drawCursor();
+    //drawWorld();
+    //drawCursor();
 
   }
-}
-
-void initGame(){
-  gb.titleScreen(F("DYNAMIC TILE MAP DEMO"));
-  gb.pickRandomSeed(); //pick a different random seed each time for games to be different
-  initWorld();
-  gb.popup(F("\25:change \26:rotate"),60);
 }
 
 void initWorld(){
